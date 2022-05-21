@@ -2,7 +2,6 @@ const ghibliJson = require("./data/ghibli.json")
 
 const express = require("express")
 const cors = require("cors")
-
 const app = express()
 
 app.use(cors())
@@ -21,8 +20,6 @@ app.get("/", (request, response)=>{
 app.get("/ghibli/filmes", (request, response)=>{
     response.status(200).send(ghibliJson)
 })
-
-
 
 app.get("/ghibli/buscar/:id", (request, response)=>{
     let idRequest = request.params.id
@@ -58,6 +55,52 @@ app.post("/ghibli/cadastrar", (request,response)=>{
     })
 })
 
+app.delete("/ghibli/deletar/:id", (request, response)=>{
+    const idRequest = request.params.id
+    const filmeEncontrado = ghibliJson.find(filme => filme.id == idRequest)
+
+    const indice = ghibliJson.indexOf(filmeEncontrado)
+
+    ghibliJson.splice(indice, 1)
+
+    response.status(200). json([{
+        "mensagem": "filme deletado com sucesso",
+        "filme-deletado" : filmeEncontrado,
+        ghibliJson 
+    }])
+})
+
+app.put("/ghibli/substituir/:id", (request, response) => {
+    const idRequest = request.params.id
+    const bodyRequest = request.body
+
+    const filmeEncontrado = ghibliJson.find(filme => filme.id == idRequest)
+
+    const indice = ghibliJson.indexOf(filmeEncontrado)
+    ghibliJson.splice(indice, 1, bodyRequest)
+
+    response.status(200).json([{
+        "mensagem": "filme atualizado com sucesso",
+        "filme-atualizado": ghibliJson
+    }])
+})
+
+//metodo PATCH que vai atualizar o titulo de um dado ja existente
+app.patch("ghibli/updateTitulo/:id", (request, response)=>{
+    const idRequest = request.params.id
+    const newTitle = request.body.title
+
+    const filmeEncontrado = ghibliJson.find(filme = filme.id == idRequest)
+
+    filmeEncontrado.title = newTitle
+
+    response.status(200).json([{
+        "mensagem": "titulo atualizado com sucesso",
+        "filme-atualizado": filmeEncontrado,
+        ghibliJson
+    }])
+
+})
 
 
 app.listen(3030, ()=>{
