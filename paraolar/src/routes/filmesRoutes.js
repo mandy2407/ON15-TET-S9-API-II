@@ -10,4 +10,6 @@ router.get("/catalogo/:id", controller.getById)
 
 router.post("/cadastrar", controller.createMovie)
 
+router.patch("/updateTitle/:id", controller.updateTitle)
+
 module.exports = router
